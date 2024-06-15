@@ -1,0 +1,48 @@
+name: 'ROS Noetic: Build and Test'
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    container: ros:noetic-ros-base-focal
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install System Deps on Noetic
+      run: |
+        apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+        apt update && apt install -y python3-wstool python3-catkin-tools git libtool
+
+    - name: Build
+      env:
+        DEBIAN_FRONTEND: noninteractiv
+      shell: bash
+      run: |
+        apt update
+        mkdir -p $HOME/catkin_ws/src;
+        cd $HOME/catkin_ws
+        catkin init
+        catkin config --extend "/opt/ros/noetic"
+        catkin config --merge-devel
+        catkin config --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo
+        cd $HOME/catkin_ws/src
+        ln -s $GITHUB_WORKSPACE
+
+        # Dependencies
+        git clone https://github.com/catkin/catkin_simple.git
+        git clone https://github.com/ethz-asl/glog_catkin.git
+        git clone https://github.com/ethz-asl/eigen_catkin.git
+        # Build
+        catkin build  build catkin_simple glog_catkin eigen_catkin spatial_hash
+
+    - name: Test
+      shell: bash
+      run: |
+          cd $HOME/catkin_ws
+          catkin test config_utilities --test-target test
