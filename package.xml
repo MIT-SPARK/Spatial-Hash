@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>spatial_hash</name>
+  <version>1.0.0</version>
+  <description>A lightweight spatial hashing library.</description>
+
+  <author email="lschmid@mit.edu">Lukas Schmid</author>
+  <maintainer email="lschmid@mit.edu">Lukas Schmid</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>cmake</buildtool_depend>
+  <depend>eigen</depend>
+  <depend>libgoogle-glog-dev</depend>
+  <test_depend>gtest</test_depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+
+</package>
