@@ -46,4 +46,4 @@ jobs:
       shell: bash
       run: |
           cd $HOME/catkin_ws
-          catkin test config_utilities --test-target test
+          catkin test spatial_hash --test-target test
