@@ -16,11 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-
-    - name: Install System Deps on Noetic
-      run: |
-        apt update && apt install -y libeigen3-dev libgoogle-glog-dev libgtest-dev
-
+    
     - name: Configure CMake
       shell: bash
       run: |

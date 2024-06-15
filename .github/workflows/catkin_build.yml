@@ -39,7 +39,8 @@ jobs:
         git clone https://github.com/ethz-asl/glog_catkin.git
         git clone https://github.com/ethz-asl/eigen_catkin.git
         # Build
-        catkin build  build catkin_simple glog_catkin eigen_catkin spatial_hash
+        catkin build catkin_simple glog_catkin eigen_catkin 
+        catkin build spatial_hash
 
     - name: Test
       shell: bash
