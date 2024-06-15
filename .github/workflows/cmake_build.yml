@@ -17,17 +17,17 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Configure CMake
-      shell: bash
-      run: |
-        cd ${{github.workspace}}
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
     - name: Install Deps
       shell: bash
       run: |
         apt-get update
         apt-get install -y libeigen3-dev libgoogle-glog-dev libgtest-dev
+
+    - name: Configure CMake
+      shell: bash
+      run: |
+        cd ${{github.workspace}}
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
       shell: bash
