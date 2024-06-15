@@ -21,12 +21,7 @@ jobs:
       shell: bash
       run: |
         sudo apt-get update
-        sudo apt-get install -y libeigen3-dev libgtest-dev
-        git clone https://github.com/google/glog.git
-        cd glog
-        cmake -B build -S . -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-        cmake --build build
-        sudo cmake --build build --target install
+        sudo apt-get install -y libeigen3-dev 
 
     - name: Configure CMake
       shell: bash
