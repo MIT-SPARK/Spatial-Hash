@@ -1,3 +1,5 @@
+![Build and Test](https://github.com/MIT-SPARK/Spatial-Hash/actions/workflows/catkin_build.yml/badge.svg)
+
 # Spatial Hash
 A minimal library for spatial data structures based on voxel hashing.
 
