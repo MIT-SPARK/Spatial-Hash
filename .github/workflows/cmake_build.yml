@@ -26,7 +26,7 @@ jobs:
         cd glog
         cmake -B build -S . -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
         cmake --build build
-        cmake --build build --target install
+        sudo cmake --build build --target install
 
     - name: Configure CMake
       shell: bash
