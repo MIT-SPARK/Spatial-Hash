@@ -20,8 +20,8 @@ jobs:
     - name: Install Deps
       shell: bash
       run: |
-        apt-get update
-        apt-get install -y libeigen3-dev libgoogle-glog-dev libgtest-dev
+        sudo apt-get update
+        sudo apt-get install -y libeigen3-dev libgoogle-glog-dev libgtest-dev
 
     - name: Configure CMake
       shell: bash
