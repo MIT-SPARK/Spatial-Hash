@@ -27,14 +27,15 @@ jobs:
         cmake -S . -B build -G "Unix Makefiles"
         cmake --build build
         sudo cmake --install build
-
-    - name: Configure CMake
-      shell: bash
-      run: |
-        cd ${{github.workspace}}
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
+        
     # TODO(lschmid) messes with finding glog somehow
+
+    # - name: Configure CMake
+    #   shell: bash
+    #   run: |
+    #     cd ${{github.workspace}}
+    #     cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
     # - name: Build
     #   shell: bash
     #   run: cmake --build ${{github.workspace}}/build
