@@ -58,7 +58,7 @@ TEST(VoxelBlock, IndicesValid) {
 }
 
 TEST(VoxelBlock, IndexConversion) {
-  const VoxelBlock<int> block(0.1, 16, BlockIndex(0, 0, 0));
+  const VoxelBlock<int> block(0.1, 16, BlockIndex(1, 2, 3));
 
   // Linear to local.
   EXPECT_EQ(VoxelIndex(0, 0, 0), block.getVoxelIndex(0));
@@ -73,6 +73,10 @@ TEST(VoxelBlock, IndexConversion) {
   EXPECT_EQ(1, block.getLinearIndex(VoxelIndex(1, 0, 0)));
   EXPECT_EQ(16, block.getLinearIndex(VoxelIndex(0, 1, 0)));
   EXPECT_EQ(256, block.getLinearIndex(VoxelIndex(0, 0, 1)));
+
+  // Point to local.
+  EXPECT_EQ(VoxelIndex(0, 0, 0), block.getVoxelIndex(Point(1.6, 3.2, 4.8)));
+  EXPECT_EQ(VoxelIndex(15, 15, 15), block.getVoxelIndex(Point(3.15, 4.75, 6.35)));
 }
 
 TEST(VoxelBlock, Iterator) {

@@ -133,6 +133,13 @@ struct VoxelBlock : public IndexGrid, public Block {
   }
 
   /**
+   * @brief Get the local voxel index from a global position. This voxel index may be invalid if the
+   * point is outside the block.
+   * @param position The global position to convert.
+   */
+  VoxelIndex getVoxelIndex(const Point& position) const { return toIndex(position - origin()); }
+
+  /**
    * @brief Get the global voxel index from a linear index.
    * @param linear_index The linear index to convert.
    */
