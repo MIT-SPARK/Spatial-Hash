@@ -47,12 +47,8 @@ namespace spatial_hash {
  * @brief Index-based neighbor search.
  */
 struct NeighborSearch {
-  // Number of neighbors to search for.
-  enum class Connectivity : uint32_t { k6 = 6u, k18 = 18u, k26 = 26u };
-
   // Constructors.
-  explicit NeighborSearch(Connectivity connectivity);
-  explicit NeighborSearch(uint32_t connectivity);
+  explicit NeighborSearch(size_t connectivity);
   virtual ~NeighborSearch() = default;
 
   /**
@@ -63,7 +59,7 @@ struct NeighborSearch {
   template <typename IndexT>
   std::vector<IndexT> neighborIndices(const IndexT& index, const bool include_self = false) const;
 
-  const Connectivity connectivity;
+  const size_t connectivity;
 
  protected:
   // Neighbor offsets ordered for self->6->18->26 connectivity.
@@ -76,10 +72,7 @@ struct NeighborSearch {
  */
 template <typename BlockT>
 struct BlockNeighborSearch : public NeighborSearch {
-  BlockNeighborSearch(const Layer<BlockT>& layer, Connectivity connectivity);
-  BlockNeighborSearch(const Layer<BlockT>& layer, uint32_t connectivity)
-      : BlockNeighborSearch(layer, static_cast<Connectivity>(connectivity)) {}
-
+  BlockNeighborSearch(const Layer<BlockT>& layer, size_t connectivity);
   virtual ~BlockNeighborSearch() = default;
 
   /**
@@ -104,9 +97,7 @@ template <typename BlockT>
 struct VoxelNeighborSearch : public NeighborSearch {
   using VoxelType = typename BlockT::VoxelType;
 
-  VoxelNeighborSearch(const VoxelLayer<BlockT>& layer, Connectivity connectivity);
-  VoxelNeighborSearch(const VoxelLayer<BlockT>& layer, uint32_t connectivity)
-      : VoxelNeighborSearch(layer, static_cast<Connectivity>(connectivity)) {}
+  VoxelNeighborSearch(const VoxelLayer<BlockT>& layer, size_t connectivity);
 
   virtual ~VoxelNeighborSearch() = default;
 

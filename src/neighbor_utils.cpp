@@ -36,19 +36,13 @@
 
 namespace spatial_hash {
 
-NeighborSearch::NeighborSearch(Connectivity connectivity) : connectivity(connectivity) {
-  checkConnectivity();
-}
-
-NeighborSearch::NeighborSearch(uint32_t connectivity)
-    : connectivity(static_cast<Connectivity>(connectivity)) {
+NeighborSearch::NeighborSearch(size_t connectivity) : connectivity(connectivity) {
   checkConnectivity();
 }
 
 void NeighborSearch::checkConnectivity() const {
-  CHECK(connectivity == Connectivity::k6 || connectivity == Connectivity::k18 ||
-        connectivity == Connectivity::k26)
-      << "Invalid connectivity value: " << static_cast<uint32_t>(connectivity);
+  CHECK(connectivity == 6 || connectivity == 18 || connectivity == 26)
+      << "Invalid connectivity value: " << connectivity << ", must be 6, 18, or 26.";
 }
 
 const Eigen::Matrix<int, 3, 27> NeighborSearch::kNeighborOffsets = [] {

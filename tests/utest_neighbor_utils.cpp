@@ -44,11 +44,18 @@ TEST(NeighborUtils, IndicesValid) {
   const auto neighbors = search.neighborIndices(index, true);
   EXPECT_EQ(7, neighbors.size());
   EXPECT_EQ(index, neighbors[0]);
+  EXPECT_EQ(Index(-1, 0, 0), neighbors[1]);
+  EXPECT_EQ(Index(1, 0, 0), neighbors[2]);
+  EXPECT_EQ(Index(0, -1, 0), neighbors[3]);
+  EXPECT_EQ(Index(0, 1, 0), neighbors[4]);
+  EXPECT_EQ(Index(0, 0, -1), neighbors[5]);
+  EXPECT_EQ(Index(0, 0, 1), neighbors[6]);
 
   // Long Index search.
   const LongIndex index2(1, 1, 1);
   const auto neighbors2 = search.neighborIndices(index2, false);
   EXPECT_EQ(6, neighbors2.size());
+  EXPECT_EQ(LongIndex(0, 1, 1), neighbors2[0]);
 
   // 18-neighbor search.
   const NeighborSearch search2(18);
@@ -57,7 +64,7 @@ TEST(NeighborUtils, IndicesValid) {
 
   // 26 neighbor search.
   const NeighborSearch search3(26);
-  const auto neighbors4 = search3.neighborIndices(index, false);
+  const auto neighbors4 = search3.neighborIndices(Index(0, 2, -2), false);
   EXPECT_EQ(26, neighbors4.size());
 }
 
