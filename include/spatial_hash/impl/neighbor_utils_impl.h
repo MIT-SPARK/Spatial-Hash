@@ -42,18 +42,17 @@
 namespace spatial_hash {
 
 template <typename BlockT>
-BlockNeighborSearch<BlockT>::BlockNeighborSearch(const Layer<BlockT>& layer,
-                                                 Connectivity connectivity)
+BlockNeighborSearch<BlockT>::BlockNeighborSearch(const Layer<BlockT>& layer, size_t connectivity)
     : NeighborSearch(connectivity), layer_(layer) {}
 
 template <typename IndexT>
 std::vector<IndexT> NeighborSearch::neighborIndices(const IndexT& index,
                                                     const bool include_self) const {
-  std::vector<IndexT> neighbors(static_cast<size_t>(connectivity) +
-                                static_cast<size_t>(include_self));
-
-  for (size_t i = include_self ? 0 : 1; i < neighbors.size(); ++i) {
-    neighbors[i] = index + kNeighborOffsets.col(i).cast<typename IndexT::Scalar>();
+  const size_t offset = include_self ? 0 : 1;
+  std::vector<IndexT> neighbors;
+  neighbors.reserve(connectivity + offset);
+  for (size_t i = offset; i <= connectivity; ++i) {
+    neighbors.emplace_back(index + kNeighborOffsets.col(i).cast<typename IndexT::Scalar>());
   }
   return neighbors;
 }
@@ -64,7 +63,6 @@ std::vector<const BlockT*> BlockNeighborSearch<BlockT>::neighborBlocks(
     const bool include_self) const {
   std::vector<const BlockT*> neighbors;
   neighbors.reserve(static_cast<size_t>(connectivity) + static_cast<size_t>(include_self));
-
   for (const auto& index : neighborIndices(block_index, include_self)) {
     const auto block = layer_.getBlockPtr(index);
     if (block) {
@@ -77,7 +75,7 @@ std::vector<const BlockT*> BlockNeighborSearch<BlockT>::neighborBlocks(
 
 template <typename BlockT>
 VoxelNeighborSearch<BlockT>::VoxelNeighborSearch(const VoxelLayer<BlockT>& layer,
-                                                 Connectivity connectivity)
+                                                 size_t connectivity)
     : NeighborSearch(connectivity), layer_(layer) {}
 
 template <typename BlockT>
