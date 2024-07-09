@@ -171,6 +171,18 @@ void Layer<BlockT>::removeBlocks(const BlockIndexIterable& block_indices) {
 }
 
 template <typename BlockT>
+void Layer<BlockT>::removeBlocks(const std::function<bool(const BlockT&)>& condition) {
+  auto it = blocks_.begin();
+  while (it != blocks_.end()) {
+    if (condition(*it->second)) {
+      it = blocks_.erase(it);
+    } else {
+      ++it;
+    }
+  }
+}
+
+template <typename BlockT>
 void Layer<BlockT>::clear() {
   blocks_.clear();
 }

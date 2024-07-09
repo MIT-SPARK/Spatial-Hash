@@ -192,6 +192,12 @@ class Layer {
   void removeBlocks(const BlockIndexIterable& block_indices);
 
   /**
+   * @brief Remove all blocks that satisfy a given condition.
+   * @param condition The condition to check. Evaluates to true if the block should be removed.
+   */
+  void removeBlocks(const std::function<bool(const BlockT&)>& condition);
+
+  /**
    * @brief Remove all blocks from the layer.
    */
   void clear();
