@@ -9,7 +9,7 @@ jobs:
         # setup package dependencies
       - name: Dependencies
         run: |
-          sudo apt install libgtest-dev libeigen3-dev
+          sudo apt install libgtest-dev libeigen3-dev libgoogle-glog-dev
         # configure repo
       - name: Configure
         run: |
