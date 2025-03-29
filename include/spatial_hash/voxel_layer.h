@@ -276,12 +276,14 @@ class VoxelLayer : protected Grid<GlobalIndex>, public BlockLayer<BlockT> {
         : blocks_(blocks), num_voxels_(num_voxels) {}
     virtual ~VoxelIterable() = default;
 
-    class iterator : public std::iterator<std::forward_iterator_tag,
-                                          VoxelType,
-                                          std::ptrdiff_t,
-                                          VoxelType*,
-                                          VoxelType&> {
+    class iterator {
      public:
+      using iterator_category = std::forward_iterator_tag;
+      using difference_type = std::ptrdiff_t;
+      using value_type = VoxelType;
+      using pointer = VoxelType*;
+      using reference = VoxelType&;
+
       iterator(MapIt map_it, MapIt map_end, size_t voxel_idx, size_t num_voxels)
           : map_it_(map_it), map_end_(map_end), voxel_idx_(voxel_idx), num_voxels_(num_voxels) {}
 
@@ -315,12 +317,14 @@ class VoxelLayer : protected Grid<GlobalIndex>, public BlockLayer<BlockT> {
       const size_t num_voxels_;
     };
 
-    class const_iterator : public std::iterator<std::forward_iterator_tag,
-                                                VoxelType,
-                                                std::ptrdiff_t,
-                                                VoxelType*,
-                                                VoxelType&> {
+    class const_iterator {
      public:
+      using iterator_category = std::forward_iterator_tag;
+      using difference_type = std::ptrdiff_t;
+      using value_type = const VoxelType;
+      using pointer = const VoxelType*;
+      using reference = const VoxelType&;
+
       const_iterator(MapIt map_it, MapIt map_end, size_t voxel_idx, size_t num_voxels)
           : map_it_(map_it), map_end_(map_end), voxel_idx_(voxel_idx), num_voxels_(num_voxels) {}
 
