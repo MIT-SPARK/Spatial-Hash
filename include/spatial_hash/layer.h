@@ -34,7 +34,9 @@
  * -------------------------------------------------------------------------- */
 #pragma once
 
+#include <cstddef>
 #include <functional>
+#include <iterator>
 #include <memory>
 #include <utility>
 #include <vector>
@@ -204,10 +206,14 @@ class Layer {
 
  public:
   // Iterators.
-  class iterator
-      : public std::iterator<std::forward_iterator_tag, BlockT, std::ptrdiff_t, BlockT*, BlockT&> {
+  class iterator {
    public:
     using MapIt = typename BlockMap::iterator;
+    using iterator_category = std::forward_iterator_tag;
+    using difference_type = std::ptrdiff_t;
+    using value_type = BlockT;
+    using pointer = BlockT*;
+    using reference = Block&;
 
     explicit iterator(MapIt it) : it_(it) {}
     iterator& operator++() {
@@ -228,13 +234,14 @@ class Layer {
     MapIt it_;
   };
 
-  class const_iterator : public std::iterator<std::forward_iterator_tag,
-                                              const BlockT,
-                                              std::ptrdiff_t,
-                                              BlockT const*,
-                                              const BlockT&> {
+  class const_iterator {
    public:
     using MapIt = typename BlockMap::const_iterator;
+    using iterator_category = std::forward_iterator_tag;
+    using difference_type = std::ptrdiff_t;
+    using value_type = const BlockT;
+    using pointer = const BlockT*;
+    using reference = const Block&;
 
     explicit const_iterator(MapIt it) : it_(it) {}
     const_iterator& operator++() {
