@@ -1,0 +1,30 @@
+name: "Ubuntu-latest: Build and Test"
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+        # checkout the code
+      - uses: actions/checkout@v4
+        # setup package dependencies
+      - name: Dependencies
+        run: |
+          sudo apt install libgtest-dev libeigen3-dev
+          git clone https://github.com/google/glog.git
+          cd glog
+          cmake -S . -B build -G "Unix Makefiles"
+          sudo cmake --build build --target install
+        
+        # configure repo
+      - name: Configure
+        run: |
+          cmake -B ${{github.workspace}}/build \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DSPATIAL_HASH_BUILD_TESTS=ON
+        # build repo
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config Release
+        # run unit tests
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        run: ctest -C Release
