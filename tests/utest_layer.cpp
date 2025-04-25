@@ -204,4 +204,26 @@ TEST(Layer, BlocksWithCondition) {
   }
 }
 
+TEST(Layer, RemoveBlocksWithCondition) {
+  struct Block {
+    int data;
+  };
+  Layer<Block> layer(1.0f);
+  layer.allocateBlock(BlockIndex(0, 0, 0)).data = 1;
+  layer.allocateBlock(BlockIndex(1, 0, 0)).data = 2;
+  layer.allocateBlock(BlockIndex(0, 1, 0)).data = 3;
+  layer.allocateBlock(BlockIndex(0, 0, 1)).data = 4;
+
+  // Remove blocks with condition.
+  const std::function<bool(const Block&)> greater2 = [](const Block& block) {
+    return block.data > 2;
+  };
+  layer.removeBlocks(greater2);
+  EXPECT_EQ(layer.numBlocks(), 2);
+  EXPECT_TRUE(layer.hasBlock(BlockIndex(0, 0, 0)));
+  EXPECT_TRUE(layer.hasBlock(BlockIndex(1, 0, 0)));
+  EXPECT_FALSE(layer.hasBlock(BlockIndex(0, 1, 0)));
+  EXPECT_FALSE(layer.hasBlock(BlockIndex(0, 0, 1)));
+}
+
 }  // namespace spatial_hash
