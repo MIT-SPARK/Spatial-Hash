@@ -47,7 +47,10 @@ namespace spatial_hash {
 
 /**
  * @brief Base data structure for data to be stored in a BlockGrid.
+ * @tparam IndexT The type of the block index. Defaults to BlockIndex.
+ * @tparam PointT The type of the point. Defaults to Point. Must match the dimensionality of IndexT.
  */
+template <typename IndexT = BlockIndex, typename PointT = Point>
 struct Block {
   // Types.
   using Ptr = std::shared_ptr<Block>;
@@ -59,7 +62,7 @@ struct Block {
    * @param block_size The side length of the block.
    * @param index Index of the block in the grid.
    */
-  Block(float block_size, const BlockIndex& index);
+  Block(float block_size, const IndexT& index) : block_size(block_size), index(index) {}
 
   Block(const Block& other) = default;
 
@@ -67,16 +70,34 @@ struct Block {
 
   virtual ~Block() = default;
 
-  Block& operator=(const Block& other);
+  Block& operator=(const Block& other) {
+    if (this == &other) {
+      return *this;
+    }
 
-  Block& operator=(Block&& other);
+    const_cast<float&>(block_size) = other.block_size;
+    const_cast<IndexT&>(index) = other.index;
+    updated = other.updated;
+    return *this;
+  }
+
+  Block& operator=(Block&& other) {
+    if (this == &other) {
+      return *this;
+    }
+
+    const_cast<float&>(block_size) = other.block_size;
+    const_cast<IndexT&>(index) = other.index;
+    updated = other.updated;
+    return *this;
+  }
 
   // Config.
-  // Number of voxels per side of the block.
+  // Metric side length of the block.
   const float block_size;
 
   // Index of the block in the grid
-  const BlockIndex index;
+  const IndexT index;
 
   // Attributes.
   // Flag indicating if the block has been updated. Can be set or unset by any user.
@@ -91,12 +112,14 @@ struct Block {
   /**
    * @brief Get the center point of the block.
    */
-  Point position() const { return centerPointFromIndex<BlockIndex>(index, block_size); }
+  PointT position() const { return centerPointFromIndex<IndexT, PointT>(index, block_size); }
 
   /**
    * @brief Get the origin point of the block.
    */
-  Point origin() const { return originPointFromIndex<BlockIndex>(index, block_size); }
+  PointT origin() const { return originPointFromIndex<IndexT, PointT>(index, block_size); }
 };
+
+using Block2D = Block<BlockIndex2D, Point2D>;
 
 }  // namespace spatial_hash

@@ -38,9 +38,12 @@ namespace spatial_hash {
 
 BlockIndex blockIndexFromGlobalIndex(const GlobalIndex& global_index,
                                      const size_t voxels_per_side) {
-  return BlockIndex(global_index.x() / voxels_per_side,
-                    global_index.y() / voxels_per_side,
-                    global_index.z() / voxels_per_side);
+  return (global_index / voxels_per_side).cast<BlockIndex::Scalar>();
+}
+
+BlockIndex2D blockIndexFromGlobalIndex(const GlobalIndex2D& global_index,
+                                       const size_t voxels_per_side) {
+  return (global_index / voxels_per_side).cast<BlockIndex2D::Scalar>();
 }
 
 VoxelIndex localIndexFromGlobalIndex(const GlobalIndex& global_index,
@@ -48,6 +51,11 @@ VoxelIndex localIndexFromGlobalIndex(const GlobalIndex& global_index,
   return VoxelIndex(global_index.x() % voxels_per_side,
                     global_index.y() % voxels_per_side,
                     global_index.z() % voxels_per_side);
+}
+
+VoxelIndex2D localIndexFromGlobalIndex(const GlobalIndex2D& global_index,
+                                       const size_t voxels_per_side) {
+  return VoxelIndex2D(global_index.x() % voxels_per_side, global_index.y() % voxels_per_side);
 }
 
 GlobalIndex globalIndexFromLocalIndices(const BlockIndex& block_index,
@@ -58,13 +66,29 @@ GlobalIndex globalIndexFromLocalIndices(const BlockIndex& block_index,
                      local_index.z() + block_index.z() * voxels_per_side);
 }
 
+GlobalIndex2D globalIndexFromLocalIndices(const BlockIndex2D& block_index,
+                                          const VoxelIndex2D& local_index,
+                                          const size_t voxels_per_side) {
+  return GlobalIndex2D(local_index.x() + block_index.x() * voxels_per_side,
+                       local_index.y() + block_index.y() * voxels_per_side);
+}
+
 GlobalIndex globalIndexFromKey(const VoxelKey& key, const size_t voxels_per_side) {
+  return globalIndexFromLocalIndices(key.first, key.second, voxels_per_side);
+}
+
+GlobalIndex2D globalIndexFromKey(const VoxelKey2D& key, const size_t voxels_per_side) {
   return globalIndexFromLocalIndices(key.first, key.second, voxels_per_side);
 }
 
 VoxelKey keyFromGlobalIndex(const GlobalIndex& global_index, const size_t voxels_per_side) {
   return VoxelKey(blockIndexFromGlobalIndex(global_index, voxels_per_side),
                   localIndexFromGlobalIndex(global_index, voxels_per_side));
+}
+
+VoxelKey2D keyFromGlobalIndex(const GlobalIndex2D& global_index, const size_t voxels_per_side) {
+  return VoxelKey2D(blockIndexFromGlobalIndex(global_index, voxels_per_side),
+                    localIndexFromGlobalIndex(global_index, voxels_per_side));
 }
 
 VoxelIndex voxelIndexFromLinearIndex(const size_t linear_index, const size_t voxels_per_side) {
@@ -79,8 +103,21 @@ VoxelIndex voxelIndexFromLinearIndex(const size_t linear_index, const size_t vox
   return result;
 }
 
+VoxelIndex2D voxelIndexFromLinearIndex2D(const size_t linear_index, const size_t voxels_per_side) {
+  int rem = linear_index;
+  VoxelIndex2D result;
+  std::div_t div_temp = std::div(rem, voxels_per_side);
+  result.y() = div_temp.quot;
+  result.x() = div_temp.rem;
+  return result;
+}
+
 size_t linearIndexFromVoxelIndex(const VoxelIndex& index, const size_t voxels_per_side) {
   return index.x() + voxels_per_side * (index.y() + index.z() * voxels_per_side);
+}
+
+size_t linearIndexFromVoxelIndex2D(const VoxelIndex2D& index, const size_t voxels_per_side) {
+  return index.x() + voxels_per_side * index.y();
 }
 
 }  // namespace spatial_hash

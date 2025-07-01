@@ -54,7 +54,7 @@ namespace spatial_hash {
  * @tparam BlockT The type of blocks contained in the layer. Can be any data structure but should be
  * copy constructable.
  */
-template <typename BlockT>
+template <typename BlockT, typename PointT>
 class Layer {
  public:
   // Types.

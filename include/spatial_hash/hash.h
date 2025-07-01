@@ -49,13 +49,11 @@ namespace spatial_hash {
 struct IndexHash {
   // 1290 is the maximum number to fill a 32-bit integer. Afterwards, collisions will occur through
   // overflow.
-  static constexpr unsigned int s1 = 1290;
-  static constexpr unsigned int s2 = s1 * s1;
+  inline static const auto s = Index(1, 1290, 1290 * 1290);
+  inline static const auto s2d = Index2D(1, 1290);
 
-  int operator()(const Index& index) const {
-    return static_cast<unsigned int>(index.x()) + static_cast<unsigned int>(index.y()) * s1 +
-           static_cast<unsigned int>(index.z()) * s2;
-  }
+  int operator()(const Index& index) const { return index.dot(s); }
+  int operator()(const Index2D& index) const { return index.dot(s2d); }
 };
 
 /**
@@ -64,35 +62,44 @@ struct IndexHash {
 struct LongIndexHash {
   // 2097152 is the maximum number to fill a 64-bit integer. Afterwards, collisions will occur
   // through overflow.
-  static constexpr int64_t s1 = 2097152;
-  static constexpr int64_t s2 = s1 * s1;
+  inline static const auto s = LongIndex(1, 2097152, 2097152 * 2097152);
+  inline static const auto s2d = LongIndex2D(1, 2097152);
 
-  int64_t operator()(const LongIndex& index) const {
-    return index.x() + index.y() * s1 + index.z() * s2;
-  }
+  int64_t operator()(const LongIndex& index) const { return index.dot(s); }
+  int64_t operator()(const LongIndex2D& index) const { return index.dot(s2d); }
 };
 
-template <typename ValueType>
-using IndexHashMap =
-    std::unordered_map<Index,
-                       ValueType,
-                       IndexHash,
-                       std::equal_to<Index>,
-                       Eigen::aligned_allocator<std::pair<const Index, ValueType>>>;
+// Base templates for easier parsing of types in the hash maps and sets.
+template <typename ValueT, typename IndexT, typename HashT>
+using HashMapBase = std::unordered_map<IndexT,
+                                       ValueT,
+                                       HashT,
+                                       std::equal_to<IndexT>,
+                                       Eigen::aligned_allocator<std::pair<const IndexT, ValueT>>>;
 
-template <typename ValueType>
-using LongIndexHashMap =
-    std::unordered_map<LongIndex,
-                       ValueType,
-                       LongIndexHash,
-                       std::equal_to<LongIndex>,
-                       Eigen::aligned_allocator<std::pair<const LongIndex, ValueType>>>;
-using IndexSet =
-    std::unordered_set<Index, IndexHash, std::equal_to<Index>, Eigen::aligned_allocator<Index>>;
+template <typename IndexT, typename HashT>
+using IndexSetBase =
+    std::unordered_set<IndexT, HashT, std::equal_to<IndexT>, Eigen::aligned_allocator<IndexT>>;
 
-using LongIndexSet = std::unordered_set<LongIndex,
-                                        LongIndexHash,
-                                        std::equal_to<LongIndex>,
-                                        Eigen::aligned_allocator<LongIndex>>;
+// Common maps and sets.
+template <typename ValueT>
+using IndexMap = HashMapBase<ValueT, Index, IndexHash>;
+
+template <typename ValueT>
+using LongIndexMap = HashMapBase<ValueT, LongIndex, LongIndexHash>;
+
+template <typename ValueT>
+using IndexMap2D = HashMapBase<ValueT, Index2D, IndexHash>;
+
+template <typename ValueT>
+using LongIndexMap2D = HashMapBase<ValueT, LongIndex2D, LongIndexHash>;
+
+using IndexSet = IndexSetBase<Index, IndexHash>;
+
+using LongIndexSet = IndexSetBase<LongIndex, LongIndexHash>;
+
+using IndexSet2D = IndexSetBase<Index2D, IndexHash>;
+
+using LongIndexSet2D = IndexSetBase<LongIndex2D, LongIndexHash>;
 
 }  // namespace spatial_hash

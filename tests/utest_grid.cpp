@@ -100,12 +100,14 @@ TEST(Grid, Positions) {
 
   BlockIndex block_index(0, 0, 0);
   Point position(0.05, 0.05, 0.05);
-  EXPECT_EQ(position, centerPointFromIndex(block_index, voxel_size));
+  Point p_new = centerPointFromIndex<BlockIndex, Point>(block_index, voxel_size);
+  EXPECT_EQ(position, p_new);
   EXPECT_EQ(block_index, indexFromPoint<BlockIndex>(position, voxel_size));
 
   block_index = BlockIndex(1, 2, 3);
   position = Point(0.15, 0.25, 0.35);
-  EXPECT_EQ(position, centerPointFromIndex(block_index, voxel_size));
+  p_new = centerPointFromIndex<BlockIndex, Point>(block_index, voxel_size);
+  EXPECT_EQ(position, p_new);
   EXPECT_EQ(block_index, indexFromPoint<BlockIndex>(position, 1.0f / voxel_size));
 }
 

@@ -41,25 +41,37 @@
 
 namespace spatial_hash {
 
-// 3D coordinates in space.
+// Coordinates in space. By default, spatial hash uses 3D coordinates, but 2D coordinates are also
+// supported.
 using Point = Eigen::Vector3f;
+using Point2D = Eigen::Vector2f;
 
 // Indices.
 using IndexType = int;
 using Index = Eigen::Matrix<IndexType, 3, 1>;
+using Index2D = Eigen::Matrix<IndexType, 2, 1>;
 using LongIndexType = int64_t;
 using LongIndex = Eigen::Matrix<LongIndexType, 3, 1>;
+using LongIndex2D = Eigen::Matrix<LongIndexType, 2, 1>;
 
 // Predefined index types.
-using BlockIndex = Index;                            // Block indices.
-using VoxelIndex = Index;                            // Local voxel indices.
-using GlobalIndex = Index;                           // Global voxel indices.
-using VoxelKey = std::pair<BlockIndex, VoxelIndex>;  // <BlockIndex, local VoxelIndex>
+using BlockIndex = Index;                                  // Block indices.
+using VoxelIndex = Index;                                  // Local voxel indices.
+using GlobalIndex = Index;                                 // Global voxel indices.
+using VoxelKey = std::pair<BlockIndex, VoxelIndex>;        // <BlockIndex, local VoxelIndex>
+using BlockIndex2D = Index2D;                              // 2D block indices.
+using VoxelIndex2D = Index2D;                              // 2D local voxel indices
+using GlobalIndex2D = Index2D;                             // 2D global voxel indices
+using VoxelKey2D = std::pair<BlockIndex2D, VoxelIndex2D>;  // <BlockIndex2D, local VoxelIndex2D>
 
 // Index containers.
 using BlockIndices = std::vector<BlockIndex>;
 using VoxelIndices = std::vector<VoxelIndex>;
 using GlobalIndices = std::vector<GlobalIndex>;
 using VoxelKeys = std::vector<VoxelKey>;
+using BlockIndices2D = std::vector<BlockIndex2D>;
+using VoxelIndices2D = std::vector<VoxelIndex2D>;
+using GlobalIndices2D = std::vector<GlobalIndex2D>;
+using VoxelKeys2D = std::vector<VoxelKey2D>;
 
 }  // namespace spatial_hash

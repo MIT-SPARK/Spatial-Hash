@@ -34,6 +34,7 @@
  * -------------------------------------------------------------------------- */
 #pragma once
 
+#include <Eigen/Dense>
 #include <glog/logging.h>
 
 #include "spatial_hash/types.h"
@@ -45,12 +46,12 @@ namespace spatial_hash {
  * @param point The point to compute the grid index from.
  * @param voxel_size_inv The inverse of the grid size. Must be > 0.
  * @tparam IndexT The type of the grid index.
+ * @tparam PointT The type of the point. Dimensionality must match IndexT.
+ * @return The grid index corresponding to the point.
  */
-template <typename IndexT>
-IndexT indexFromPoint(const Point& point, const float voxel_size_inv) {
-  return IndexT(std::floor(point.x() * voxel_size_inv),
-                std::floor(point.y() * voxel_size_inv),
-                std::floor(point.z() * voxel_size_inv));
+template <typename IndexT, typename PointT>
+IndexT indexFromPoint(const PointT& point, const float voxel_size_inv) {
+  return (point * voxel_size_inv).array().floor().template cast<typename IndexT::Scalar>();
 }
 
 /**
@@ -58,10 +59,12 @@ IndexT indexFromPoint(const Point& point, const float voxel_size_inv) {
  * @param index The grid index to compute the point from.
  * @param voxel_size The size of the grid.
  * @tparam IndexT The type of the grid index.
+ * @tparam PointT The type of the point. Dimensionality must match IndexT.
+ * @return The center point of the cell corresponding to the grid index.
  */
-template <typename IndexT>
-Point centerPointFromIndex(const IndexT& index, const float voxel_size) {
-  return (Point(index.x(), index.y(), index.z()) + Point(0.5f, 0.5f, 0.5f)) * voxel_size;
+template <typename IndexT, typename PointT>
+PointT centerPointFromIndex(const IndexT& index, const float voxel_size) {
+  return (index.template cast<float>() + PointT::Ones() * 0.5f) * voxel_size;
 }
 
 /**
@@ -69,10 +72,12 @@ Point centerPointFromIndex(const IndexT& index, const float voxel_size) {
  * @param index The grid index to compute the point from.
  * @param voxel_size The size of the grid.
  * @tparam IndexT The type of the grid index.
+ * @tparam PointT The type of the point. Dimensionality must match IndexT.
+ * @return The origin point of the cell corresponding to the grid index.
  */
-template <typename IndexT>
-Point originPointFromIndex(const IndexT& index, const float voxel_size) {
-  return Point(index.x(), index.y(), index.z()) * voxel_size;
+template <typename IndexT, typename PointT>
+PointT originPointFromIndex(const IndexT& index, const float voxel_size) {
+  return index.template cast<float>() * voxel_size;
 }
 
 /**
@@ -81,6 +86,8 @@ Point originPointFromIndex(const IndexT& index, const float voxel_size) {
  * @param voxels_per_side The number of voxels per side of a block.
  */
 BlockIndex blockIndexFromGlobalIndex(const GlobalIndex& global_index, const size_t voxels_per_side);
+BlockIndex2D blockIndexFromGlobalIndex(const GlobalIndex2D& global_index,
+                                       const size_t voxels_per_side);
 
 /**
  * @brief Compute the local voxel index within a block from a global voxel index.
@@ -88,6 +95,8 @@ BlockIndex blockIndexFromGlobalIndex(const GlobalIndex& global_index, const size
  * @param voxels_per_side The number of voxels per side of a block.
  */
 VoxelIndex localIndexFromGlobalIndex(const GlobalIndex& global_index, const size_t voxels_per_side);
+VoxelIndex2D localIndexFromGlobalIndex(const GlobalIndex2D& global_index,
+                                       const size_t voxels_per_side);
 
 /**
  * @brief Compute the global voxel index from a local voxel index and block index.
@@ -98,12 +107,16 @@ VoxelIndex localIndexFromGlobalIndex(const GlobalIndex& global_index, const size
 GlobalIndex globalIndexFromLocalIndices(const BlockIndex& block_index,
                                         const VoxelIndex& local_index,
                                         const size_t voxels_per_side);
+GlobalIndex2D globalIndexFromLocalIndices(const BlockIndex2D& block_index,
+                                          const VoxelIndex2D& local_index,
+                                          const size_t voxels_per_side);
 /**
  * @brief Compute the global voxel index from a voxel key.
  * @param key The voxel key.
  * @param voxels_per_side The number of voxels per side of a block.
  */
 GlobalIndex globalIndexFromKey(const VoxelKey& key, const size_t voxels_per_side);
+GlobalIndex2D globalIndexFromKey(const VoxelKey2D& key, const size_t voxels_per_side);
 
 /**
  * @brief Compute the voxel key from a global voxel index.
@@ -111,6 +124,7 @@ GlobalIndex globalIndexFromKey(const VoxelKey& key, const size_t voxels_per_side
  * @param voxels_per_side The number of voxels per side of a block.
  */
 VoxelKey keyFromGlobalIndex(const GlobalIndex& global_index, const size_t voxels_per_side);
+VoxelKey2D keyFromGlobalIndex(const GlobalIndex2D& global_index, const size_t voxels_per_side);
 
 /**
  * @brief Compute the local voxel index from a linear index. Linear indices range from 0 to
@@ -119,6 +133,7 @@ VoxelKey keyFromGlobalIndex(const GlobalIndex& global_index, const size_t voxels
  * @param voxels_per_side The number of voxels per side of a block.
  */
 VoxelIndex voxelIndexFromLinearIndex(const size_t linear_index, const size_t voxels_per_side);
+VoxelIndex2D voxelIndexFromLinearIndex2D(const size_t linear_index, const size_t voxels_per_side);
 
 /**
  * @brief Compute the linear index from a local voxel index. Linear indices range from 0 to
@@ -127,12 +142,13 @@ VoxelIndex voxelIndexFromLinearIndex(const size_t linear_index, const size_t vox
  * @param voxels_per_side The number of voxels per side of a block.
  */
 size_t linearIndexFromVoxelIndex(const VoxelIndex& index, const size_t voxels_per_side);
+size_t linearIndexFromVoxelIndex2D(const VoxelIndex2D& index, const size_t voxels_per_side);
 
 /**
  * @brief A fixed resolution grid to move between points and grid indices.
  * @tparam IndexT The type of the grid index.
  */
-template <typename IndexT>
+template <typename IndexT, typename PointT>
 struct Grid {
   /**
    * @brief Construct a grid with a fixed resolution.
@@ -164,14 +180,16 @@ struct Grid {
    * @brief Compute the grid index from a coordinate point.
    * @param point The point to compute the grid index from.
    */
-  IndexT toIndex(const Point& point) const { return indexFromPoint<IndexT>(point, voxel_size_inv); }
+  IndexT toIndex(const Point& point) const {
+    return indexFromPoint<IndexT, PointT>(point, voxel_size_inv);
+  }
 
   /**
    * @brief Compute the cell center point from a grid index.
    * @param index The grid index to compute the point from.
    */
   Point toPoint(const IndexT& index) const {
-    return centerPointFromIndex<IndexT>(index, voxel_size);
+    return centerPointFromIndex<IndexT, PointT>(index, voxel_size);
   }
 
   // Side length of one voxel.
@@ -182,7 +200,9 @@ struct Grid {
 };
 
 // Common grid definitions.
-using IndexGrid = Grid<Index>;
-using LongIndexGrid = Grid<LongIndex>;
+using IndexGrid = Grid<Index, Point>;
+using LongIndexGrid = Grid<LongIndex, Point>;
+using IndexGrid2D = Grid<Index2D, Point2D>;
+using LongIndexGrid2D = Grid<LongIndex2D, Point2D>;
 
 }  // namespace spatial_hash

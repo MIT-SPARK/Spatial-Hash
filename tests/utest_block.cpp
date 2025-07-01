@@ -40,7 +40,7 @@
 namespace spatial_hash {
 
 TEST(Block, Copy) {
-  struct TestBlock : public Block {
+  struct TestBlock : public Block<> {
     TestBlock(float block_size, const BlockIndex& index) : Block(block_size, index) {}
     int data = 0;
   };
