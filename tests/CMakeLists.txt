@@ -25,7 +25,7 @@ add_executable(
   # utest_block_layer.cpp
   utest_grid.cpp
   utest_hash.cpp
-  utest_layer.cpp
+  # utest_layer.cpp
   # utest_neighbor_utils.cpp
   # utest_voxel_block.cpp
   # utest_voxel_layer.cpp

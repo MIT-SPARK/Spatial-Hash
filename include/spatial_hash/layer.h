@@ -53,8 +53,10 @@ namespace spatial_hash {
  * but should be copy constructable.
  * @tparam BlockT The type of blocks contained in the layer. Can be any data structure but should be
  * copy constructable.
+ * @tparam PointT The type of points used for indexing. Defaults to Point. Must match the
+ * dimensionality used in BlockT.
  */
-template <typename BlockT, typename PointT>
+template <typename BlockT, typename PointT = Point>
 class Layer {
  public:
   // Types.

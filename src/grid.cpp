@@ -91,6 +91,7 @@ VoxelKey2D keyFromGlobalIndex(const GlobalIndex2D& global_index, const size_t vo
                     localIndexFromGlobalIndex(global_index, voxels_per_side));
 }
 
+template <>
 VoxelIndex voxelIndexFromLinearIndex(const size_t linear_index, const size_t voxels_per_side) {
   int rem = linear_index;
   VoxelIndex result;
@@ -103,7 +104,8 @@ VoxelIndex voxelIndexFromLinearIndex(const size_t linear_index, const size_t vox
   return result;
 }
 
-VoxelIndex2D voxelIndexFromLinearIndex2D(const size_t linear_index, const size_t voxels_per_side) {
+template <>
+VoxelIndex2D voxelIndexFromLinearIndex(const size_t linear_index, const size_t voxels_per_side) {
   int rem = linear_index;
   VoxelIndex2D result;
   std::div_t div_temp = std::div(rem, voxels_per_side);
@@ -116,7 +118,7 @@ size_t linearIndexFromVoxelIndex(const VoxelIndex& index, const size_t voxels_pe
   return index.x() + voxels_per_side * (index.y() + index.z() * voxels_per_side);
 }
 
-size_t linearIndexFromVoxelIndex2D(const VoxelIndex2D& index, const size_t voxels_per_side) {
+size_t linearIndexFromVoxelIndex(const VoxelIndex2D& index, const size_t voxels_per_side) {
   return index.x() + voxels_per_side * index.y();
 }
 

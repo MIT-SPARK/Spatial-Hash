@@ -62,8 +62,8 @@ struct IndexHash {
 struct LongIndexHash {
   // 2097152 is the maximum number to fill a 64-bit integer. Afterwards, collisions will occur
   // through overflow.
-  inline static const auto s = LongIndex(1, 2097152, 2097152 * 2097152);
-  inline static const auto s2d = LongIndex2D(1, 2097152);
+  inline static const auto s = LongIndex(1l, 2097152l, 2097152l * 2097152l);
+  inline static const auto s2d = LongIndex2D(1l, 2097152l);
 
   int64_t operator()(const LongIndex& index) const { return index.dot(s); }
   int64_t operator()(const LongIndex2D& index) const { return index.dot(s2d); }

@@ -111,4 +111,73 @@ TEST(Grid, Positions) {
   EXPECT_EQ(block_index, indexFromPoint<BlockIndex>(position, 1.0f / voxel_size));
 }
 
+TEST(Grid2D, LinearIndices) {
+  // Test conversion between linear and voxel indices in 2D.
+  const size_t voxel_per_side = 16;
+  VoxelIndex2D voxel_index(0, 0);
+  size_t linear_index = 0;
+  EXPECT_EQ(voxel_index, voxelIndexFromLinearIndex2D(linear_index, voxel_per_side));
+  EXPECT_EQ(linear_index, linearIndexFromVoxelIndex(voxel_index, voxel_per_side));
+
+  voxel_index = VoxelIndex2D(5, 0);
+  linear_index = 5;
+  EXPECT_EQ(voxel_index, voxelIndexFromLinearIndex2D(linear_index, voxel_per_side));
+  EXPECT_EQ(linear_index, linearIndexFromVoxelIndex(voxel_index, voxel_per_side));
+
+  voxel_index = VoxelIndex2D(0, 5);
+  linear_index = 5 * voxel_per_side;
+  EXPECT_EQ(voxel_index, voxelIndexFromLinearIndex2D(linear_index, voxel_per_side));
+  EXPECT_EQ(linear_index, linearIndexFromVoxelIndex(voxel_index, voxel_per_side));
+
+  voxel_index = VoxelIndex2D(2, 3);
+  linear_index = 2 + 3 * voxel_per_side;
+  EXPECT_EQ(voxel_index, voxelIndexFromLinearIndex2D(linear_index, voxel_per_side));
+  EXPECT_EQ(linear_index, linearIndexFromVoxelIndex(voxel_index, voxel_per_side));
+}
+
+TEST(Grid2D, GlobalIndices) {
+  // Test block index from global index in 2D.
+  const size_t voxels_per_side = 16;
+
+  // Trivial index.
+  GlobalIndex2D global_index(0, 0);
+  EXPECT_EQ(BlockIndex2D(0, 0), blockIndexFromGlobalIndex(global_index, voxels_per_side));
+  EXPECT_EQ(VoxelIndex2D(0, 0), localIndexFromGlobalIndex(global_index, voxels_per_side));
+
+  // Non-trivial index.
+  global_index = GlobalIndex2D(1, 17);
+  EXPECT_EQ(BlockIndex2D(0, 1), blockIndexFromGlobalIndex(global_index, voxels_per_side));
+  EXPECT_EQ(VoxelIndex2D(1, 1), localIndexFromGlobalIndex(global_index, voxels_per_side));
+
+  // Corner.
+  global_index = GlobalIndex2D(16, 16);
+  EXPECT_EQ(BlockIndex2D(1, 1), blockIndexFromGlobalIndex(global_index, voxels_per_side));
+  EXPECT_EQ(VoxelIndex2D(0, 0), localIndexFromGlobalIndex(global_index, voxels_per_side));
+
+  // Get global index from local index.
+  EXPECT_EQ(GlobalIndex2D(0, 0),
+            globalIndexFromLocalIndices(BlockIndex2D(0, 0), VoxelIndex2D(0, 0), voxels_per_side));
+  EXPECT_EQ(GlobalIndex2D(1, 17),
+            globalIndexFromLocalIndices(BlockIndex2D(0, 1), VoxelIndex2D(1, 1), voxels_per_side));
+  EXPECT_EQ(GlobalIndex2D(16, 16),
+            globalIndexFromLocalIndices(BlockIndex2D(1, 1), VoxelIndex2D(0, 0), voxels_per_side));
+}
+
+TEST(Grid2D, Positions) {
+  // Test conversion between index and 2D position.
+  const float voxel_size = 0.1;
+
+  BlockIndex2D block_index(0, 0);
+  Point2D position(0.05, 0.05);
+  Point2D p_new = centerPointFromIndex<BlockIndex2D, Point2D>(block_index, voxel_size);
+  EXPECT_EQ(position, p_new);
+  EXPECT_EQ(block_index, indexFromPoint<BlockIndex2D>(position, voxel_size));
+
+  block_index = BlockIndex2D(1, 2);
+  position = Point2D(0.15, 0.25);
+  p_new = centerPointFromIndex<BlockIndex2D, Point2D>(block_index, voxel_size);
+  EXPECT_EQ(position, p_new);
+  EXPECT_EQ(block_index, indexFromPoint<BlockIndex2D>(position, 1.0f / voxel_size));
+}
+
 }  // namespace spatial_hash

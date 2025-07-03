@@ -34,6 +34,8 @@
  * -------------------------------------------------------------------------- */
 #pragma once
 
+#include <stdexcept>
+
 #include <Eigen/Dense>
 #include <glog/logging.h>
 
@@ -131,9 +133,12 @@ VoxelKey2D keyFromGlobalIndex(const GlobalIndex2D& global_index, const size_t vo
  voxels_per_side^3-1 and traverse x->y->z.
  * @param linear_index The linear index to convert.
  * @param voxels_per_side The number of voxels per side of a block.
+ * @tparam VoxelIndexT The type of the local voxel index.
  */
-VoxelIndex voxelIndexFromLinearIndex(const size_t linear_index, const size_t voxels_per_side);
-VoxelIndex2D voxelIndexFromLinearIndex2D(const size_t linear_index, const size_t voxels_per_side);
+template <typename VoxelIndexT>
+VoxelIndexT voxelIndexFromLinearIndex(const size_t linear_index, const size_t voxels_per_side) {
+  throw std::invalid_argument("Unsupported voxel index type for linear index conversion.");
+}
 
 /**
  * @brief Compute the linear index from a local voxel index. Linear indices range from 0 to
@@ -142,7 +147,7 @@ VoxelIndex2D voxelIndexFromLinearIndex2D(const size_t linear_index, const size_t
  * @param voxels_per_side The number of voxels per side of a block.
  */
 size_t linearIndexFromVoxelIndex(const VoxelIndex& index, const size_t voxels_per_side);
-size_t linearIndexFromVoxelIndex2D(const VoxelIndex2D& index, const size_t voxels_per_side);
+size_t linearIndexFromVoxelIndex(const VoxelIndex2D& index, const size_t voxels_per_side);
 
 /**
  * @brief A fixed resolution grid to move between points and grid indices.

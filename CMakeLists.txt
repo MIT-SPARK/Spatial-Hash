@@ -7,6 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_compile_options(-Wall -Wextra)
 
+
 option(SPATIAL_HASH_BUILD_TESTS "Build tests" ON)
 
 find_package(Eigen3 REQUIRED)
