@@ -1,4 +1,4 @@
-![Build and Test](https://github.com/MIT-SPARK/Spatial-Hash/actions/workflows/catkin_build.yml/badge.svg)
+[![Spatial Hash: Build and Test](https://github.com/MIT-SPARK/Spatial-Hash/actions/workflows/ci.yaml/badge.svg)](https://github.com/MIT-SPARK/Spatial-Hash/actions/workflows/ci.yaml)
 
 # Spatial Hash
 A minimal library for spatial data structures based on voxel-block-hashing.
@@ -35,7 +35,7 @@ It was developed by [Lukas Schmid](https://schmluk.github.io/) at the [MIT-SPARK
     cd build
     cmake ..
     make -j
-    
+
     # optionally install this package
     sudo make install
     ```

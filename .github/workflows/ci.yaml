@@ -1,0 +1,49 @@
+---
+name: 'Spatial Hash: Build and Test'
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dependencies
+        run: sudo apt-get update && sudo apt install pipx
+      - name: Lint
+        run: pipx install pre-commit && cd ${{github.workspace}} && pre-commit run --all-files
+  cmake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dependencies
+        run: sudo apt-get update && sudo apt install libgtest-dev libeigen3-dev libgoogle-glog-dev
+      - name: Configure
+        run: cmake -B ${{github.workspace}}/build -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config Release
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        run: ctest -C Release
+  ros2:
+    runs-on: ubuntu-latest
+    container: ros:jazzy-ros-base
+    steps:
+      - uses: actions/checkout@v4
+        with: {path: src/spatial_hash}
+      - name: Dependencies
+        run: |
+          sudo apt-get update
+          rosdep update --rosdistro jazzy && rosdep install --rosdistro jazzy --from-paths src --ignore-src -r -y
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          colcon build --cmake-args --no-warn-unused-cli -DCMAKE_BUILD_TYPE=Release
+      - name: Test
+        shell: bash
+        run: |-
+          source /opt/ros/jazzy/setup.bash
+          colcon test

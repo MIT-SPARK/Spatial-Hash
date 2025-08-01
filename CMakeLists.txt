@@ -7,8 +7,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_compile_options(-Wall -Wextra)
 
-option(SPATIAL_HASH_BUILD_TESTS "Build tests" ON)
-
 find_package(Eigen3 REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(glog REQUIRED IMPORTED_TARGET libglog)
@@ -26,8 +24,8 @@ target_include_directories(
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen PkgConfig::glog)
 
-if(SPATIAL_HASH_BUILD_TESTS)
-  find_package(GTest REQUIRED)
+include(CTest)
+if(BUILD_TESTING)
   enable_testing()
   add_subdirectory(tests)
 endif()
