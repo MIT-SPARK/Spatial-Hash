@@ -35,7 +35,7 @@ It was developed by [Lukas Schmid](https://schmluk.github.io/) at the [MIT-SPARK
     cd build
     cmake ..
     make -j
-    
+
     # optionally install this package
     sudo make install
     ```
