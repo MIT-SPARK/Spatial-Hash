@@ -39,11 +39,10 @@
 
 namespace spatial_hash {
 
-template <typename IndexType, typename Type>
-IndexType randomIndex(const Type range) {
-  return IndexType(static_cast<Type>(rand() % (2 * range) - range),
-                   static_cast<Type>(rand() % (2 * range) - range),
-                   static_cast<Type>(rand() % (2 * range) - range));
+template <typename IndexType, typename Type, typename Generator>
+IndexType randomIndex(const Type range, Generator& gen) {
+  std::uniform_int_distribution<Type> distribution(-range, range);
+  return IndexType(distribution(gen), distribution(gen), distribution(gen));
 }
 
 // Compute the badness of a hash map. The lower the better the hash. 0 is optimal
@@ -85,13 +84,15 @@ TEST(Hash, HashMapAccess) {
 // NOTE(lschmid): Takes a few seconds to compute and onlyu relevant if hash is updated (see if it
 // gets better or worse, might need more thorough test cases though.)
 TEST(Hash, DISABLED_HashMapCollisions) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+
   IndexHashMap<int> map;
   int range = 1290;
-  srand(42);
 
   // Within range.
   for (size_t i = 0; i < 100000; ++i) {
-    map[randomIndex<Index>(range)] = i;
+    map[randomIndex<Index>(range, gen)] = i;
   }
   double badness = computeMapBadness(map);
   EXPECT_NEAR(badness, 0.002408, 1e-6);
@@ -100,7 +101,7 @@ TEST(Hash, DISABLED_HashMapCollisions) {
   range = 10000;
   map.clear();
   for (size_t i = 0; i < 100000; ++i) {
-    map[randomIndex<Index>(range)] = i;
+    map[randomIndex<Index>(range, gen)] = i;
   }
   badness = computeMapBadness(map);
   EXPECT_NEAR(badness, 0.0, 1e-6);
