@@ -34,7 +34,9 @@ jobs:
       - uses: actions/checkout@v4
         with: {path: src/spatial_hash}
       - name: Dependencies
-        run: rosdep update --rosdistro jazzy && rosdep install --rosdistro jazzy --from-paths src --ignore-src -r -y
+        run: |
+          sudo apt-get update
+          rosdep update --rosdistro jazzy && rosdep install --rosdistro jazzy --from-paths src --ignore-src -r -y
       - name: Build
         shell: bash
         run: |
