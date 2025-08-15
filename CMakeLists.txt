@@ -8,8 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_compile_options(-Wall -Wextra)
 
 find_package(Eigen3 REQUIRED)
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(glog REQUIRED IMPORTED_TARGET libglog)
+find_package(glog REQUIRED)
 
 add_library(
   ${PROJECT_NAME}
@@ -22,7 +21,7 @@ target_include_directories(
   ${PROJECT_NAME} PUBLIC $<INSTALL_INTERFACE:include>
                          $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
-target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen PkgConfig::glog)
+target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen glog::glog)
 
 include(CTest)
 if(BUILD_TESTING)
