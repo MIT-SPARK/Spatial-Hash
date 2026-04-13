@@ -15,7 +15,7 @@ It was developed by [Lukas Schmid](https://schmluk.github.io/) at the [MIT-SPARK
 
 1. Install dependencies:
     ```
-    sudo apt install libeigen3-dev libgoogle-glog-dev libgtest-dev
+    sudo apt install libeigen3-dev libgtest-dev
     ```
     Alternatively, if building with catkin or ROS,
     ```
