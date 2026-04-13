@@ -34,7 +34,6 @@
  * -------------------------------------------------------------------------- */
 #pragma once
 
-#include <utility>
 #include <vector>
 
 #include "spatial_hash/neighbor_utils.h"

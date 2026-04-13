@@ -41,8 +41,10 @@ NeighborSearch::NeighborSearch(size_t connectivity) : connectivity(connectivity)
 }
 
 void NeighborSearch::checkConnectivity() const {
-  CHECK(connectivity == 6 || connectivity == 18 || connectivity == 26)
-      << "Invalid connectivity value: " << connectivity << ", must be 6, 18, or 26.";
+  if (connectivity != 6 && connectivity != 18 && connectivity != 26) {
+    throw std::domain_error("Invalid connectivity value " + std::to_string(connectivity) +
+                            ", must be 6, 18, or 26");
+  }
 }
 
 const Eigen::Matrix<int, 3, 27> NeighborSearch::kNeighborOffsets = [] {
