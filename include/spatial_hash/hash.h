@@ -37,7 +37,6 @@
 #include <functional>
 #include <unordered_map>
 #include <unordered_set>
-#include <utility>
 
 #include "spatial_hash/types.h"
 
@@ -73,26 +72,13 @@ struct LongIndexHash {
 };
 
 template <typename ValueType>
-using IndexHashMap =
-    std::unordered_map<Index,
-                       ValueType,
-                       IndexHash,
-                       std::equal_to<Index>,
-                       Eigen::aligned_allocator<std::pair<const Index, ValueType>>>;
+using IndexHashMap = std::unordered_map<Index, ValueType, IndexHash, std::equal_to<Index>>;
 
 template <typename ValueType>
 using LongIndexHashMap =
-    std::unordered_map<LongIndex,
-                       ValueType,
-                       LongIndexHash,
-                       std::equal_to<LongIndex>,
-                       Eigen::aligned_allocator<std::pair<const LongIndex, ValueType>>>;
-using IndexSet =
-    std::unordered_set<Index, IndexHash, std::equal_to<Index>, Eigen::aligned_allocator<Index>>;
+    std::unordered_map<LongIndex, ValueType, LongIndexHash, std::equal_to<LongIndex>>;
+using IndexSet = std::unordered_set<Index, IndexHash, std::equal_to<Index>>;
 
-using LongIndexSet = std::unordered_set<LongIndex,
-                                        LongIndexHash,
-                                        std::equal_to<LongIndex>,
-                                        Eigen::aligned_allocator<LongIndex>>;
+using LongIndexSet = std::unordered_set<LongIndex, LongIndexHash, std::equal_to<LongIndex>>;
 
 }  // namespace spatial_hash
