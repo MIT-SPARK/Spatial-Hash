@@ -32,6 +32,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * -------------------------------------------------------------------------- */
+#include <limits>
+#include <stdexcept>
+
 #include <gtest/gtest.h>
 #include <spatial_hash/neighbor_utils.h>
 
@@ -142,6 +145,11 @@ TEST(NeighborUtils, VoxelNeighborSearch) {
 
   neighbors4 = search2.neighborVoxels(GlobalIndex(1, 1, 0), true);
   EXPECT_EQ(18, neighbors4.size());
+}
+
+TEST(NeighborSearch, InvalidConnectivityThrows) {
+  EXPECT_THROW(NeighborSearch(7), std::domain_error);
+  EXPECT_NO_THROW(NeighborSearch(6));
 }
 
 }  // namespace spatial_hash

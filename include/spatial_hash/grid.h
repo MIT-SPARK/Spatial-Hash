@@ -33,8 +33,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * -------------------------------------------------------------------------- */
 #pragma once
-
-#include <glog/logging.h>
+#include <cmath>
+#include <stdexcept>
+#include <string>
 
 #include "spatial_hash/types.h"
 
@@ -139,7 +140,9 @@ struct Grid {
    * @param voxel_size The width of a cell.
    */
   explicit Grid(const float voxel_size) : voxel_size(voxel_size), voxel_size_inv(1.f / voxel_size) {
-    CHECK(voxel_size > 0.0f);
+    if (!std::isfinite(voxel_size) || voxel_size <= 0.0f) {
+      throw std::domain_error("invalid voxel size: " + std::to_string(voxel_size));
+    }
   }
 
   Grid(const Grid& other) : voxel_size(other.voxel_size), voxel_size_inv(other.voxel_size_inv) {}

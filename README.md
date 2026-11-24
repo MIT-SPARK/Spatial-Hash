@@ -15,7 +15,7 @@ It was developed by [Lukas Schmid](https://schmluk.github.io/) at the [MIT-SPARK
 
 1. Install dependencies:
     ```
-    sudo apt install libeigen3-dev libgoogle-glog-dev libgtest-dev
+    sudo apt install libeigen3-dev libgtest-dev
     ```
     Alternatively, if building with catkin or ROS,
     ```
@@ -50,3 +50,8 @@ It was developed by [Lukas Schmid](https://schmluk.github.io/) at the [MIT-SPARK
     pip install pre-commit
     pre-commit install
     ```
+
+Invalid grid resolutions, voxel dimensions, and neighbor connectivity throw
+`std::domain_error`. Accessing an unallocated block with `getBlock` throws
+`std::out_of_range`; use the nullable lookup when a missing block is expected.
+This development version no longer links or exports glog.

@@ -33,12 +33,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * -------------------------------------------------------------------------- */
 #pragma once
-
-#include <memory>
+#include <stdexcept>
+#include <string>
 #include <utility>
-#include <vector>
-
-#include <glog/logging.h>
 
 #include "spatial_hash/voxel_block.h"
 
@@ -50,7 +47,10 @@ VoxelBlock<VoxelT>::VoxelBlock(float voxel_size, size_t voxels_per_side, const B
       Block(voxel_size * voxels_per_side, index),
       voxels_per_side(voxels_per_side),
       voxels(numVoxels()) {
-  CHECK((voxels_per_side & (voxels_per_side - 1)) == 0) << "voxels_per_side must be a power of 2";
+  if (voxels_per_side == 0 || (voxels_per_side & (voxels_per_side - 1)) != 0) {
+    throw std::domain_error("voxels_per_side must be a power of 2, not " +
+                            std::to_string(voxels_per_side));
+  }
 }
 
 template <typename VoxelT>

@@ -32,6 +32,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * -------------------------------------------------------------------------- */
+#include <limits>
+#include <stdexcept>
+
 #include <gtest/gtest.h>
 #include <spatial_hash/voxel_block.h>
 
@@ -119,6 +122,12 @@ TEST(VoxelBlock, Assignment) {
   EXPECT_EQ(block_copy.updated, block.updated);
   EXPECT_EQ(block_copy.index, block.index);
   EXPECT_EQ(block_copy.numVoxels(), block.numVoxels());
+}
+
+TEST(VoxelBlock, InvalidDimensionsThrow) {
+  EXPECT_THROW(VoxelBlock<int>(0.1f, 0, BlockIndex::Zero()), std::domain_error);
+  EXPECT_THROW(VoxelBlock<int>(0.1f, 3, BlockIndex::Zero()), std::domain_error);
+  EXPECT_NO_THROW(VoxelBlock<int>(0.1f, 4, BlockIndex::Zero()));
 }
 
 }  // namespace spatial_hash
