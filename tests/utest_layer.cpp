@@ -32,6 +32,8 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * -------------------------------------------------------------------------- */
+#include <stdexcept>
+
 #include <gtest/gtest.h>
 #include <spatial_hash/layer.h>
 
@@ -202,6 +204,19 @@ TEST(Layer, BlocksWithCondition) {
   for (const auto& block : layer) {
     EXPECT_LE(block.data, 2);
   }
+}
+
+TEST(Layer, MissingBlockThrows) {
+  struct Data {
+    int value = 0;
+  };
+  Layer<Data> layer(1.0f);
+  const BlockIndex index(1, 2, 3);
+  EXPECT_THROW(layer.getBlock(index), std::out_of_range);
+  const auto& const_layer = layer;
+  EXPECT_THROW(const_layer.getBlock(index), std::out_of_range);
+  layer.allocateBlock(index).value = 7;
+  EXPECT_EQ(const_layer.getBlock(index).value, 7);
 }
 
 }  // namespace spatial_hash

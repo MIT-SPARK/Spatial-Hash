@@ -35,7 +35,6 @@
 #pragma once
 
 #include <memory>
-#include <vector>
 
 #include "spatial_hash/voxel_layer.h"
 

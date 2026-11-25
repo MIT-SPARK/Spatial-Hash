@@ -35,10 +35,6 @@
 #pragma once
 
 #include <memory>
-#include <utility>
-#include <vector>
-
-#include <glog/logging.h>
 
 #include "spatial_hash/grid.h"
 #include "spatial_hash/types.h"

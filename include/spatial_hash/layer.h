@@ -41,8 +41,6 @@
 #include <utility>
 #include <vector>
 
-#include <glog/logging.h>
-
 #include "spatial_hash/block.h"
 #include "spatial_hash/grid.h"
 #include "spatial_hash/hash.h"

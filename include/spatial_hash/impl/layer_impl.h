@@ -33,8 +33,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * -------------------------------------------------------------------------- */
 #pragma once
-
 #include <memory>
+#include <stdexcept>
+#include <string>
 #include <vector>
 
 #include "spatial_hash/layer.h"
@@ -110,8 +111,11 @@ template <typename BlockT>
 BlockT& Layer<BlockT>::getBlock(const BlockIndex& block_index) {
   const auto it = blocks_.find(block_index);
   if (it == blocks_.end()) {
-    LOG(FATAL) << "Accessed unallocated block at " << block_index.transpose();
+    throw std::out_of_range("Accessed unallocated block at [" + std::to_string(block_index.x()) +
+                            ", " + std::to_string(block_index.y()) + ", " +
+                            std::to_string(block_index.z()) + "]");
   }
+
   return *it->second;
 }
 
@@ -119,8 +123,11 @@ template <typename BlockT>
 const BlockT& Layer<BlockT>::getBlock(const BlockIndex& block_index) const {
   const auto it = blocks_.find(block_index);
   if (it == blocks_.end()) {
-    LOG(FATAL) << "Accessed unallocated block at " << block_index.transpose();
+    throw std::out_of_range("Accessed unallocated block at [" + std::to_string(block_index.x()) +
+                            ", " + std::to_string(block_index.y()) + ", " +
+                            std::to_string(block_index.z()) + "]");
   }
+
   return *it->second;
 }
 

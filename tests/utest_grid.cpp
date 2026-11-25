@@ -32,6 +32,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * -------------------------------------------------------------------------- */
+#include <limits>
+#include <stdexcept>
+
 #include <gtest/gtest.h>
 #include <spatial_hash/grid.h>
 
@@ -107,6 +110,12 @@ TEST(Grid, Positions) {
   position = Point(0.15, 0.25, 0.35);
   EXPECT_EQ(position, centerPointFromIndex(block_index, voxel_size));
   EXPECT_EQ(block_index, indexFromPoint<BlockIndex>(position, 1.0f / voxel_size));
+}
+
+TEST(Grid, InvalidResolutionThrows) {
+  EXPECT_THROW(IndexGrid(0.0f), std::domain_error);
+  EXPECT_THROW(IndexGrid(-0.1f), std::domain_error);
+  EXPECT_THROW(IndexGrid(std::numeric_limits<float>::quiet_NaN()), std::domain_error);
 }
 
 }  // namespace spatial_hash
